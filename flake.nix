@@ -1,5 +1,5 @@
 {
-  description = "Kevin's macOS nix-darwin configuration";
+  description = "macOS configuration";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -16,6 +16,7 @@
         ./darwin-configuration.nix
         home-manager.darwinModules.home-manager
         {
+          nixpkgs.config.allowUnfree = true;
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           home-manager.backupFileExtension = "backup";
