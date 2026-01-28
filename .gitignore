@@ -1,0 +1,9 @@
+# Nix build artifacts
+result
+result-*
+
+# macOS
+.DS_Store
+
+# Backup files
+*.backup
