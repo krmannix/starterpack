@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+REPO_DIR="$HOME/.config/nix-darwin"
+DOTFILES_DIR="$REPO_DIR/dotfiles"
+
+echo "Syncing live configs back to nix-darwin repo..."
+echo
+
+# Cursor settings
+echo "→ Cursor settings"
+cp "$HOME/Library/Application Support/Cursor/User/settings.json" "$DOTFILES_DIR/cursor/settings.json"
+cp "$HOME/Library/Application Support/Cursor/User/keybindings.json" "$DOTFILES_DIR/cursor/keybindings.json"
+
+# iTerm2 preferences
+echo "→ iTerm2 preferences"
+if [ -f "$HOME/.config/iterm2/com.googlecode.iterm2.plist" ]; then
+  cp "$HOME/.config/iterm2/com.googlecode.iterm2.plist" "$DOTFILES_DIR/iterm2/com.googlecode.iterm2.plist"
+else
+  echo "  (iTerm2 plist not found - skipping)"
+fi
+
+echo
+echo "Sync complete! Changes:"
+echo
+
+cd "$REPO_DIR"
+git diff --stat
+
+echo
+echo "Run 'cd ~/.config/nix-darwin && git diff' to see detailed changes"
+echo "Run 'git add -A && git commit' to save changes"
