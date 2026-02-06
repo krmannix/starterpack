@@ -12,3 +12,4 @@
 *.zwc
 *.zwc.old
 ~*
+.zsh_plugins.zsh
