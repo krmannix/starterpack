@@ -40,7 +40,7 @@
     casks = [
       "alfred"
       "cursor"
-      "docker"
+      "docker-desktop"
       "firefox"
       "google-chrome"
       "iterm2"
