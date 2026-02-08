@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   home.stateVersion = "24.05";
@@ -57,4 +57,29 @@
     source = ./bin/nix-sync;
     executable = true;
   };
+
+  # Skills repository setup
+  home.activation.cloneSkills = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    SKILLS_REPO="$HOME/projects/mentats"
+    SKILLS_TARGET="$HOME/.claude/agents"
+
+    # Clone if missing
+    if [ ! -d "$SKILLS_REPO" ]; then
+      $DRY_RUN_CMD ${pkgs.git}/bin/git clone \
+        git@github.com:krmannix/mentats.git "$SKILLS_REPO" || true
+    fi
+
+    # Create agents directory if missing
+    $DRY_RUN_CMD mkdir -p "$SKILLS_TARGET"
+
+    # Symlink each skill (if repo exists)
+    if [ -d "$SKILLS_REPO/skills" ]; then
+      for skill_dir in "$SKILLS_REPO/skills"/*; do
+        if [ -d "$skill_dir" ]; then
+          skill_name=$(basename "$skill_dir")
+          $DRY_RUN_CMD ln -sfn "$skill_dir" "$SKILLS_TARGET/$skill_name"
+        fi
+      done
+    fi
+  '';
 }
