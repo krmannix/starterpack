@@ -15,7 +15,7 @@ Some general guidelines:
 - I'm not a fan of comments, so please use sparingly
 - Please ensure all files have newlines at the end
 - Please trim all whitespace
-- Please keep commit messages compact and to a single line
+- Please keep commit messages compact, to a single line, and all lowercase
 
 I like to have atomic, small commits that either make a behavior change or produce a refactor, as I often like to reoder commits or break them into smaller PRs when appropriate. When iterating through steps, please prefer to keep changes small and atomic.
 
