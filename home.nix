@@ -16,6 +16,7 @@
       };
       core = {
         excludesFile = "~/.gitignore";
+        editor = "vi";
       };
       http = {
         postBuffer = 524288000;
