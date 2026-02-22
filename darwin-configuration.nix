@@ -28,6 +28,7 @@
       "antidote"
       "awscli"
       "flyctl"
+      "gh"
       "git-filter-repo"
       "go"
       "hugo"
