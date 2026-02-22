@@ -138,12 +138,8 @@ CLAUDE_CONFIG="$CLAUDE_DIR/config.json"
 mkdir -p "$CLAUDE_DIR"
 
 if [ -f "$CLAUDE_CONFIG" ] && grep -q "apiKey" "$CLAUDE_CONFIG" 2>/dev/null; then
-  echo "Claude API key already configured in $CLAUDE_CONFIG"
-  read -p "Update it? (y/N): " UPDATE_CLAUDE
-  if [[ ! "$UPDATE_CLAUDE" =~ ^[Yy]$ ]]; then
-    echo "Skipping Claude API key configuration"
-    SKIP_CLAUDE=true
-  fi
+  echo "Claude API key already configured in $CLAUDE_CONFIG, skipping"
+  SKIP_CLAUDE=true
 fi
 
 if [ "${SKIP_CLAUDE:-false}" != "true" ]; then
