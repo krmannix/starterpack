@@ -211,19 +211,19 @@ echo "Some tools (e.g. Claude Code) run in non-interactive shells"
 echo "and require keys to be set in ~/.zshenv rather than ~/.zshrc."
 echo
 
-ZSHENV="$HOME/.zshenv"
+ZSHENV_LOCAL="$HOME/.config/zsh/.zshenv.local"
 
 for KEY in GEMINI_API_KEY; do
   if grep -q "^export $KEY=" "$SECRETS_FILE" 2>/dev/null; then
-    if grep -q "^export $KEY=" "$ZSHENV" 2>/dev/null; then
-      echo "$KEY already in ~/.zshenv, skipping"
+    if grep -q "^export $KEY=" "$ZSHENV_LOCAL" 2>/dev/null; then
+      echo "$KEY already in ~/.config/zsh/.zshenv.local, skipping"
     else
-      read -p "Export $KEY to ~/.zshenv? (y/N): " EXPORT_KEY
+      read -p "Export $KEY to global environment (~/.config/zsh/.zshenv.local)? (y/N): " EXPORT_KEY
       if [[ "$EXPORT_KEY" =~ ^[Yy]$ ]]; then
         VALUE=$(grep "^export $KEY=" "$SECRETS_FILE" | cut -d'=' -f2-)
-        echo "export $KEY=$VALUE" >> "$ZSHENV"
-        chmod 600 "$ZSHENV"
-        echo "✓ $KEY added to ~/.zshenv"
+        echo "export $KEY=$VALUE" >> "$ZSHENV_LOCAL"
+        chmod 600 "$ZSHENV_LOCAL"
+        echo "✓ $KEY added to ~/.config/zsh/.zshenv.local"
       fi
     fi
   fi
