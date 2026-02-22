@@ -32,7 +32,7 @@ echo
 CURRENT_GIT_NAME=$(git config --global user.name 2>/dev/null || true)
 CURRENT_GIT_EMAIL=$(git config --global user.email 2>/dev/null || true)
 
-if [ -n "$CURRENT_GIT_NAME" ] && [ -n "$CURRENT_GIT_EMAIL" ]; then
+if [ -n "$CURRENT_GIT_NAME" ] || [ -n "$CURRENT_GIT_EMAIL" ]; then
   echo "Git already configured:"
   echo "  Name:  $CURRENT_GIT_NAME"
   echo "  Email: $CURRENT_GIT_EMAIL"
