@@ -29,16 +29,39 @@ echo "Git Configuration"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo
 
-read -p "Enter your full name for git: " GIT_NAME
-read -p "Enter your email for git: " GIT_EMAIL
+CURRENT_GIT_NAME=$(git config --global user.name 2>/dev/null || true)
+CURRENT_GIT_EMAIL=$(git config --global user.email 2>/dev/null || true)
 
-# Configure git globally
-git config --global user.name "$GIT_NAME"
-git config --global user.email "$GIT_EMAIL"
+if [ -n "$CURRENT_GIT_NAME" ] && [ -n "$CURRENT_GIT_EMAIL" ]; then
+  echo "Git already configured:"
+  echo "  Name:  $CURRENT_GIT_NAME"
+  echo "  Email: $CURRENT_GIT_EMAIL"
+  read -p "Update git configuration? (y/N): " UPDATE_GIT
+  if [[ ! "$UPDATE_GIT" =~ ^[Yy]$ ]]; then
+    echo "Keeping existing git configuration"
+    GIT_NAME="$CURRENT_GIT_NAME"
+    GIT_EMAIL="$CURRENT_GIT_EMAIL"
+    SKIP_GIT=true
+  fi
+fi
 
-echo "✓ Git configured with:"
-echo "  Name:  $GIT_NAME"
-echo "  Email: $GIT_EMAIL"
+if [ "${SKIP_GIT:-false}" != "true" ]; then
+  read -p "Enter your full name for git${CURRENT_GIT_NAME:+ [$CURRENT_GIT_NAME]}: " GIT_NAME_INPUT
+  read -p "Enter your email for git${CURRENT_GIT_EMAIL:+ [$CURRENT_GIT_EMAIL]}: " GIT_EMAIL_INPUT
+
+  GIT_NAME="${GIT_NAME_INPUT:-$CURRENT_GIT_NAME}"
+  GIT_EMAIL="${GIT_EMAIL_INPUT:-$CURRENT_GIT_EMAIL}"
+
+  if [ -n "$GIT_NAME" ] && [ -n "$GIT_EMAIL" ]; then
+    git config --global user.name "$GIT_NAME"
+    git config --global user.email "$GIT_EMAIL"
+    echo "✓ Git configured with:"
+    echo "  Name:  $GIT_NAME"
+    echo "  Email: $GIT_EMAIL"
+  else
+    echo "Skipping git configuration (name or email empty)"
+  fi
+fi
 echo
 
 # ============================================================================
@@ -53,14 +76,7 @@ echo
 SSH_KEY="$HOME/.ssh/id_ed25519"
 
 if [ -f "$SSH_KEY" ]; then
-  echo "SSH key already exists at $SSH_KEY"
-  read -p "Generate a new one? (y/N): " REGEN_SSH
-  if [[ ! "$REGEN_SSH" =~ ^[Yy]$ ]]; then
-    echo "Skipping SSH key generation"
-  else
-    ssh-keygen -t ed25519 -C "$GIT_EMAIL" -f "$SSH_KEY"
-    echo "✓ New SSH key generated"
-  fi
+  echo "SSH key already exists at $SSH_KEY, skipping generation"
 else
   echo "Generating SSH key..."
   ssh-keygen -t ed25519 -C "$GIT_EMAIL" -f "$SSH_KEY" -N ""
