@@ -84,29 +84,41 @@ else
 fi
 
 echo
-echo "Starting ssh-agent and adding key..."
-eval "$(ssh-agent -s)"
-ssh-add "$SSH_KEY"
-
-echo
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "📋 Add this SSH key to GitHub:"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo
-cat "$SSH_KEY.pub"
-echo
-echo "Steps:"
-echo "  1. Copy the SSH key above"
-echo "  2. Go to https://github.com/settings/ssh/new"
-echo "  3. Paste the key and give it a title (e.g., 'MacBook Pro')"
-echo "  4. Click 'Add SSH key'"
-echo
-
-read -p "Press Enter once you've added the SSH key to GitHub..."
+if ssh-add -l 2>/dev/null | grep -qF "$SSH_KEY"; then
+  echo "SSH key already loaded in agent, skipping"
+else
+  agent_exit=$(ssh-add -l > /dev/null 2>&1; echo $?)
+  [ "$agent_exit" = "2" ] && eval "$(ssh-agent -s)"
+  ssh-add "$SSH_KEY"
+  echo "✓ SSH key added to agent"
+fi
 
 echo
 echo "Testing GitHub SSH connection..."
-ssh -T git@github.com 2>&1 | head -2 || true
+if ssh -T git@github.com 2>&1 | grep -q "successfully authenticated"; then
+  echo "✓ GitHub SSH already configured"
+else
+  echo
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "📋 Add this SSH key to GitHub:"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo
+  cat "$SSH_KEY.pub"
+  echo
+  echo "Steps:"
+  echo "  1. Copy the SSH key above"
+  echo "  2. Go to https://github.com/settings/ssh/new"
+  echo "  3. Paste the key and give it a title (e.g., 'MacBook Pro')"
+  echo "  4. Click 'Add SSH key'"
+  echo
+
+  read -p "Press Enter once you've added the SSH key to GitHub..."
+
+  echo
+  echo "Testing GitHub SSH connection..."
+  ssh -T git@github.com 2>&1 | head -2 || true
+  echo
+fi
 echo
 
 # ============================================================================
