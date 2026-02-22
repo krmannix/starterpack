@@ -174,12 +174,8 @@ echo
 SECRETS_FILE="$HOME/.config/zsh/.zshrc.d/secrets.zsh"
 
 if grep -q "GEMINI_API_KEY" "$SECRETS_FILE" 2>/dev/null; then
-  echo "Gemini API key already configured in $SECRETS_FILE"
-  read -p "Update it? (y/N): " UPDATE_GEMINI
-  if [[ ! "$UPDATE_GEMINI" =~ ^[Yy]$ ]]; then
-    echo "Skipping Gemini API key configuration"
-    SKIP_GEMINI=true
-  fi
+  echo "Gemini API key already configured in $SECRETS_FILE, skipping"
+  SKIP_GEMINI=true
 fi
 
 if [ "${SKIP_GEMINI:-false}" != "true" ]; then
