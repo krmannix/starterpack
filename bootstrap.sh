@@ -84,7 +84,7 @@ else
 fi
 
 echo
-if ssh-add -l 2>/dev/null | grep -qF "$SSH_KEY"; then
+if ssh-add -L 2>/dev/null | grep -qF "$(awk '{print $2}' "$SSH_KEY.pub")"; then
   echo "SSH key already loaded in agent, skipping"
 else
   agent_exit=$(ssh-add -l > /dev/null 2>&1; echo $?)
@@ -95,7 +95,9 @@ fi
 
 echo
 echo "Testing GitHub SSH connection..."
-if ssh -T git@github.com 2>&1 | grep -q "successfully authenticated"; then
+GITHUB_SSH_RESULT=$(ssh -T git@github.com 2>&1 || true)
+echo "$GITHUB_SSH_RESULT"
+if echo "$GITHUB_SSH_RESULT" | grep -q "successfully authenticated"; then
   echo "✓ GitHub SSH already configured"
 else
   echo
