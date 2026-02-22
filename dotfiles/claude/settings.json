@@ -12,6 +12,15 @@
     ],
     "defaultMode": "dontAsk"
   },
+  "mcpServers": {
+    "gemini": {
+      "command": "npx",
+      "args": ["-y", "gemini-nanobanana-mcp@latest"],
+      "env": {
+        "GEMINI_API_KEY": "${GEMINI_API_KEY}"
+      }
+    }
+  },
   "enabledPlugins": {
     "superpowers@superpowers-marketplace": true
   },

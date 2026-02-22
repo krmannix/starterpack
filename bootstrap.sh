@@ -137,6 +137,48 @@ fi
 echo
 
 # ============================================================================
+# Gemini API Key
+# ============================================================================
+
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "Gemini API Key Configuration"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo
+
+SECRETS_FILE="$HOME/.config/zsh/.zshrc.d/secrets.zsh"
+
+if grep -q "GEMINI_API_KEY" "$SECRETS_FILE" 2>/dev/null; then
+  echo "Gemini API key already configured in $SECRETS_FILE"
+  read -p "Update it? (y/N): " UPDATE_GEMINI
+  if [[ ! "$UPDATE_GEMINI" =~ ^[Yy]$ ]]; then
+    echo "Skipping Gemini API key configuration"
+    SKIP_GEMINI=true
+  fi
+fi
+
+if [ "${SKIP_GEMINI:-false}" != "true" ]; then
+  echo "Get your API key from: https://aistudio.google.com/apikey"
+  echo
+  read -p "Enter your Gemini API key (or press Enter to skip): " GEMINI_API_KEY_INPUT
+
+  if [ -n "$GEMINI_API_KEY_INPUT" ]; then
+    mkdir -p "$(dirname "$SECRETS_FILE")"
+    touch "$SECRETS_FILE"
+    if grep -q "GEMINI_API_KEY" "$SECRETS_FILE" 2>/dev/null; then
+      sed -i '' "s|^export GEMINI_API_KEY=.*|export GEMINI_API_KEY=\"$GEMINI_API_KEY_INPUT\"|" "$SECRETS_FILE"
+    else
+      echo "export GEMINI_API_KEY=\"$GEMINI_API_KEY_INPUT\"" >> "$SECRETS_FILE"
+    fi
+    chmod 600 "$SECRETS_FILE"
+    echo "✓ Gemini API key configured at $SECRETS_FILE"
+  else
+    echo "Skipping Gemini API key configuration"
+  fi
+fi
+
+echo
+
+# ============================================================================
 # Summary
 # ============================================================================
 
@@ -148,6 +190,7 @@ echo "Configuration summary:"
 echo "  ✓ Git: $GIT_NAME <$GIT_EMAIL>"
 echo "  ✓ SSH key: $SSH_KEY"
 echo "  $([ -f "$CLAUDE_CONFIG" ] && echo "✓" || echo "⚠") Claude API key"
+echo "  $(grep -q "GEMINI_API_KEY" "$SECRETS_FILE" 2>/dev/null && echo "✓" || echo "⚠") Gemini API key"
 echo
 echo "Next steps:"
 echo
