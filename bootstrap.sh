@@ -201,6 +201,37 @@ fi
 echo
 
 # ============================================================================
+# Global Environment Keys
+# ============================================================================
+
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "Global Environment Keys"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "Some tools (e.g. Claude Code) run in non-interactive shells"
+echo "and require keys to be set in ~/.zshenv rather than ~/.zshrc."
+echo
+
+ZSHENV="$HOME/.zshenv"
+
+for KEY in GEMINI_API_KEY; do
+  if grep -q "^export $KEY=" "$SECRETS_FILE" 2>/dev/null; then
+    if grep -q "^export $KEY=" "$ZSHENV" 2>/dev/null; then
+      echo "$KEY already in ~/.zshenv, skipping"
+    else
+      read -p "Export $KEY to ~/.zshenv? (y/N): " EXPORT_KEY
+      if [[ "$EXPORT_KEY" =~ ^[Yy]$ ]]; then
+        VALUE=$(grep "^export $KEY=" "$SECRETS_FILE" | cut -d'=' -f2-)
+        echo "export $KEY=$VALUE" >> "$ZSHENV"
+        chmod 600 "$ZSHENV"
+        echo "✓ $KEY added to ~/.zshenv"
+      fi
+    fi
+  fi
+done
+
+echo
+
+# ============================================================================
 # Summary
 # ============================================================================
 
