@@ -171,10 +171,10 @@ echo "Gemini API Key Configuration"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo
 
-ZSHENV="$HOME/.zshenv"
+SECRETS_FILE="$HOME/.config/zsh/.zshrc.d/secrets.zsh"
 
-if grep -q "GEMINI_API_KEY" "$ZSHENV" 2>/dev/null; then
-  echo "Gemini API key already configured in $ZSHENV, skipping"
+if grep -q "GEMINI_API_KEY" "$SECRETS_FILE" 2>/dev/null; then
+  echo "Gemini API key already configured in $SECRETS_FILE, skipping"
   SKIP_GEMINI=true
 fi
 
@@ -184,18 +184,50 @@ if [ "${SKIP_GEMINI:-false}" != "true" ]; then
   read -p "Enter your Gemini API key (or press Enter to skip): " GEMINI_API_KEY_INPUT
 
   if [ -n "$GEMINI_API_KEY_INPUT" ]; then
-    touch "$ZSHENV"
-    if grep -q "GEMINI_API_KEY" "$ZSHENV" 2>/dev/null; then
-      sed -i '' "s|^export GEMINI_API_KEY=.*|export GEMINI_API_KEY=\"$GEMINI_API_KEY_INPUT\"|" "$ZSHENV"
+    mkdir -p "$(dirname "$SECRETS_FILE")"
+    touch "$SECRETS_FILE"
+    if grep -q "GEMINI_API_KEY" "$SECRETS_FILE" 2>/dev/null; then
+      sed -i '' "s|^export GEMINI_API_KEY=.*|export GEMINI_API_KEY=\"$GEMINI_API_KEY_INPUT\"|" "$SECRETS_FILE"
     else
-      echo "export GEMINI_API_KEY=\"$GEMINI_API_KEY_INPUT\"" >> "$ZSHENV"
+      echo "export GEMINI_API_KEY=\"$GEMINI_API_KEY_INPUT\"" >> "$SECRETS_FILE"
     fi
-    chmod 600 "$ZSHENV"
-    echo "✓ Gemini API key configured at $ZSHENV"
+    chmod 600 "$SECRETS_FILE"
+    echo "✓ Gemini API key configured at $SECRETS_FILE"
   else
     echo "Skipping Gemini API key configuration"
   fi
 fi
+
+echo
+
+# ============================================================================
+# Global Environment Keys
+# ============================================================================
+
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "Global Environment Keys"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "Some tools (e.g. Claude Code) run in non-interactive shells"
+echo "and require keys to be set in ~/.zshenv rather than ~/.zshrc."
+echo
+
+ZSHENV_LOCAL="$HOME/.config/zsh/.zshenv.local"
+
+for KEY in GEMINI_API_KEY; do
+  if grep -q "^export $KEY=" "$SECRETS_FILE" 2>/dev/null; then
+    if grep -q "^export $KEY=" "$ZSHENV_LOCAL" 2>/dev/null; then
+      echo "$KEY already in ~/.config/zsh/.zshenv.local, skipping"
+    else
+      read -p "Export $KEY to global environment (~/.config/zsh/.zshenv.local)? (y/N): " EXPORT_KEY
+      if [[ "$EXPORT_KEY" =~ ^[Yy]$ ]]; then
+        VALUE=$(grep "^export $KEY=" "$SECRETS_FILE" | cut -d'=' -f2-)
+        echo "export $KEY=$VALUE" >> "$ZSHENV_LOCAL"
+        chmod 600 "$ZSHENV_LOCAL"
+        echo "✓ $KEY added to ~/.config/zsh/.zshenv.local"
+      fi
+    fi
+  fi
+done
 
 echo
 
@@ -211,7 +243,7 @@ echo "Configuration summary:"
 echo "  ✓ Git: $GIT_NAME <$GIT_EMAIL>"
 echo "  ✓ SSH key: $SSH_KEY"
 echo "  $([ -f "$CLAUDE_CONFIG" ] && echo "✓" || echo "⚠") Claude API key"
-echo "  $(grep -q "GEMINI_API_KEY" "$ZSHENV" 2>/dev/null && echo "✓" || echo "⚠") Gemini API key"
+echo "  $(grep -q "GEMINI_API_KEY" "$SECRETS_FILE" 2>/dev/null && echo "✓" || echo "⚠") Gemini API key"
 echo
 echo "Next steps:"
 echo

@@ -27,12 +27,16 @@
     brews = [
       "antidote"
       "awscli"
+      "flyctl"
+      "gh"
       "git-filter-repo"
       "go"
+      "hugo"
       "postgresql@15"
       "pyenv"
       "rbenv"
       "terraform"
+      "uv"
       "zoxide"
     ];
 
