@@ -21,6 +21,9 @@
       init = {
         defaultBranch = "main";
       };
+      pull = {
+        rebase = false;
+      };
       http = {
         postBuffer = 524288000;
       };
