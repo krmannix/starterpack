@@ -22,3 +22,5 @@ path=(
   /usr/local/{,s}bin(N)
   $path
 )
+
+[[ -f $XDG_CONFIG_HOME/zsh/.zshenv.local ]] && source $XDG_CONFIG_HOME/zsh/.zshenv.local
