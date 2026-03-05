@@ -17,13 +17,7 @@ git clone git@github.com:krmannix/starterpack ~/.config/starterpack
 cd ~/.config/starterpack
 ```
 
-3. Update hostname in `flake.nix`:
-```bash
-scutil --get LocalHostName  # Check your hostname
-# Edit flake.nix line 13 to match: darwinConfigurations."your-hostname"
-```
-
-4. Run bootstrap script:
+3. Run bootstrap script:
 ```bash
 ./bootstrap.sh
 ```
@@ -33,7 +27,7 @@ scutil --get LocalHostName  # Check your hostname
 After cloning and running bootstrap, apply the nix-darwin configuration:
 
 ```bash
-sudo nix --extra-experimental-features "nix-command flakes" run nix-darwin -- switch --flake /Users/kevin/.config/starterpack
+sudo nix --extra-experimental-features "nix-command flakes" run nix-darwin -- switch --flake ~/.config/starterpack#default --impure
 ```
 
 ## Updates
@@ -43,7 +37,7 @@ sudo nix --extra-experimental-features "nix-command flakes" run nix-darwin -- sw
 Edit any file in `~/.config/starterpack/`, then apply:
 
 ```bash
-darwin-rebuild switch --flake ~/.config/starterpack
+darwin-rebuild switch --flake ~/.config/starterpack#default --impure
 ```
 
 Some configs are copied rather than symlinked. After editing them in place, sync back to the repo:
@@ -59,7 +53,7 @@ Review changes, commit, and push up.
 ```bash
 cd ~/.config/starterpack
 git pull
-darwin-rebuild switch --flake ~/.config/starterpack
+darwin-rebuild switch --flake ~/.config/starterpack#default --impure
 ```
 
 ## What's managed?
