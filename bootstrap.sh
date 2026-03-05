@@ -15,9 +15,29 @@ fi
 REPO_DIR="$(pwd)"
 
 echo "This script will configure machine-specific settings:"
+echo "  - Homebrew"
 echo "  - Git user configuration"
 echo "  - SSH key for GitHub"
 echo "  - Claude API key"
+echo
+
+# ============================================================================
+# Homebrew
+# ============================================================================
+
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "Homebrew"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo
+
+if command -v brew > /dev/null 2>&1; then
+  echo "Homebrew already installed, skipping"
+else
+  echo "Installing Homebrew..."
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  echo "✓ Homebrew installed"
+fi
+
 echo
 
 # ============================================================================
