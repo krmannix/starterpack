@@ -41,6 +41,31 @@ fi
 echo
 
 # ============================================================================
+# /etc File Cleanup for nix-darwin
+# ============================================================================
+
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "/etc Preparation for nix-darwin"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "nix-darwin needs to manage /etc/zshrc and /etc/bashrc."
+echo "Any existing files will be backed up."
+echo
+
+for f in /etc/zshrc /etc/bashrc; do
+  if [ -f "$f" ] && [ ! -f "${f}.before-nix-darwin" ]; then
+    echo "Backing up $f..."
+    sudo mv "$f" "${f}.before-nix-darwin"
+    echo "✓ Moved $f -> ${f}.before-nix-darwin"
+  elif [ -f "${f}.before-nix-darwin" ]; then
+    echo "$f already backed up, skipping"
+  else
+    echo "$f does not exist, skipping"
+  fi
+done
+
+echo
+
+# ============================================================================
 # Git Configuration
 # ============================================================================
 
