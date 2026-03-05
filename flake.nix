@@ -11,7 +11,8 @@
 
   outputs = inputs@{ self, nix-darwin, nixpkgs, home-manager }:
   let
-    username = builtins.getEnv "USER";
+    sudoUser = builtins.getEnv "SUDO_USER";
+    username = if sudoUser != "" then sudoUser else builtins.getEnv "USER";
   in {
     darwinConfigurations."default" = nix-darwin.lib.darwinSystem {
       system = "aarch64-darwin";
