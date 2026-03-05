@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, username, ... }:
 
 {
   # Nix configuration
@@ -66,9 +66,9 @@
   system.stateVersion = 5;
 
   # Add users
-  system.primaryUser = "kevin";
-  users.users.kevin = {
-    name = "kevin";
-    home = "/Users/kevin";
+  system.primaryUser = username;
+  users.users.${username} = {
+    name = username;
+    home = "/Users/${username}";
   };
 }

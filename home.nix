@@ -1,9 +1,9 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, username, ... }:
 
 {
   home.stateVersion = "24.05";
-  home.username = "kevin";
-  home.homeDirectory = "/Users/kevin";
+  home.username = username;
+  home.homeDirectory = "/Users/${username}";
 
   # Git configuration
   programs.git = {
