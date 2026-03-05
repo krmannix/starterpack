@@ -27,7 +27,7 @@ cd ~/.config/starterpack
 After cloning and running bootstrap, apply the nix-darwin configuration:
 
 ```bash
-sudo nix --extra-experimental-features "nix-command flakes" run nix-darwin -- switch --flake ~/.config/starterpack --impure
+sudo nix --extra-experimental-features "nix-command flakes" run nix-darwin -- switch --flake ~/.config/starterpack#default --impure
 ```
 
 ## Updates
@@ -37,7 +37,7 @@ sudo nix --extra-experimental-features "nix-command flakes" run nix-darwin -- sw
 Edit any file in `~/.config/starterpack/`, then apply:
 
 ```bash
-darwin-rebuild switch --flake ~/.config/starterpack --impure
+darwin-rebuild switch --flake ~/.config/starterpack#default --impure
 ```
 
 Some configs are copied rather than symlinked. After editing them in place, sync back to the repo:
@@ -53,7 +53,7 @@ Review changes, commit, and push up.
 ```bash
 cd ~/.config/starterpack
 git pull
-darwin-rebuild switch --flake ~/.config/starterpack --impure
+darwin-rebuild switch --flake ~/.config/starterpack#default --impure
 ```
 
 ## What's managed?

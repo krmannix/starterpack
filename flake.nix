@@ -13,7 +13,7 @@
   let
     username = builtins.getEnv "USER";
   in {
-    darwinConfigurations."kevins-MacBook-Pro" = nix-darwin.lib.darwinSystem {
+    darwinConfigurations."default" = nix-darwin.lib.darwinSystem {
       system = "aarch64-darwin";
       specialArgs = { inherit username; };
       modules = [
