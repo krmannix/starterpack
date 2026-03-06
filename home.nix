@@ -43,11 +43,10 @@
   # .zshenv must live at ~/.zshenv for ZDOTDIR bootstrap
   home.file.".zshenv".source = ./dotfiles/zsh/.zshenv;
 
-  # iTerm2 configuration
-  home.file.".config/iterm2" = {
-    source = ./dotfiles/iterm2;
-    recursive = true;
-  };
+  # iTerm2 configuration - copied to Library/Preferences so iTerm2 can write to it
+  home.activation.iterm2Prefs = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    $DRY_RUN_CMD cp "${./dotfiles/iterm2/com.googlecode.iterm2.plist}" "$HOME/Library/Preferences/com.googlecode.iterm2.plist"
+  '';
 
   # Cursor settings
   home.file."Library/Application Support/Cursor/User/settings.json".source =
