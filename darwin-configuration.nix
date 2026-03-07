@@ -33,6 +33,7 @@
       "go"
       "hugo"
       "postgresql@15"
+      "nvm"
       "pyenv"
       "rbenv"
       "terraform"
