@@ -19,8 +19,8 @@ cp "$HOME/Library/Application Support/Cursor/User/keybindings.json" "$DOTFILES_D
 
 # iTerm2 preferences
 echo "→ iTerm2 preferences"
-if [ -f "$HOME/.config/iterm2/com.googlecode.iterm2.plist" ]; then
-  cp "$HOME/.config/iterm2/com.googlecode.iterm2.plist" "$DOTFILES_DIR/iterm2/com.googlecode.iterm2.plist"
+if [ -f "$HOME/Library/Preferences/com.googlecode.iterm2.plist" ]; then
+  cp "$HOME/Library/Preferences/com.googlecode.iterm2.plist" "$DOTFILES_DIR/iterm2/com.googlecode.iterm2.plist"
 else
   echo "  (iTerm2 plist not found - skipping)"
 fi
