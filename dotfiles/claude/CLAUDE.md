@@ -21,6 +21,13 @@ I like to have atomic, small commits that either make a behavior change or produ
 
 When generating commit messages, do not include "Co-authored-by" metadata.
 
+## PR Format
+
+- title: single line, all lowercase, no period
+- body: bullet points only, no headers, no test plan section
+- use backtick code formatting for any module names, file paths, flags, or code references
+- brevity is key — omit anything self-evident from the diff
+
 ## Code Style Guidelines
 
 ### Comments
