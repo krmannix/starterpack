@@ -35,6 +35,7 @@
       "postgresql@15"
       "nvm"
       "pyenv"
+      "pyenv-virtualenv"
       "rbenv"
       "terraform"
       "uv"
@@ -44,6 +45,8 @@
     # GUI applications
     casks = [
       "alfred"
+      "claude"
+      "codex"
       "cursor"
       "docker-desktop"
       "firefox"
