@@ -208,6 +208,29 @@ fi
 echo
 
 # ============================================================================
+# Claude Auth
+# ============================================================================
+
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "Claude Auth"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo
+
+if command -v claude > /dev/null 2>&1; then
+  if claude auth status > /dev/null 2>&1; then
+    echo "Claude already authenticated, skipping"
+  else
+    echo "Launching Claude login..."
+    claude auth login
+    echo "✓ Claude authenticated"
+  fi
+else
+  echo "claude not found, skipping auth (install via nix-darwin first)"
+fi
+
+echo
+
+# ============================================================================
 # Gemini API Key
 # ============================================================================
 
@@ -246,6 +269,38 @@ fi
 echo
 
 # ============================================================================
+# OpenAI API Key
+# ============================================================================
+
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "OpenAI API Key Configuration"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo
+
+if grep -q "OPENAI_API_KEY" "$SECRETS_FILE" 2>/dev/null; then
+  echo "OpenAI API key already configured in $SECRETS_FILE, skipping"
+  SKIP_OPENAI=true
+fi
+
+if [ "${SKIP_OPENAI:-false}" != "true" ]; then
+  echo "Get your API key from: https://platform.openai.com/api-keys"
+  echo
+  read -p "Enter your OpenAI API key (or press Enter to skip): " OPENAI_API_KEY_INPUT
+
+  if [ -n "$OPENAI_API_KEY_INPUT" ]; then
+    mkdir -p "$(dirname "$SECRETS_FILE")"
+    touch "$SECRETS_FILE"
+    echo "export OPENAI_API_KEY=\"$OPENAI_API_KEY_INPUT\"" >> "$SECRETS_FILE"
+    chmod 600 "$SECRETS_FILE"
+    echo "✓ OpenAI API key configured at $SECRETS_FILE"
+  else
+    echo "Skipping OpenAI API key configuration"
+  fi
+fi
+
+echo
+
+# ============================================================================
 # Global Environment Keys
 # ============================================================================
 
@@ -258,7 +313,7 @@ echo
 
 ZSHENV_LOCAL="$HOME/.config/zsh/.zshenv.local"
 
-for KEY in GEMINI_API_KEY; do
+for KEY in GEMINI_API_KEY OPENAI_API_KEY; do
   if grep -q "^export $KEY=" "$SECRETS_FILE" 2>/dev/null; then
     if grep -q "^export $KEY=" "$ZSHENV_LOCAL" 2>/dev/null; then
       echo "$KEY already in ~/.config/zsh/.zshenv.local, skipping"
@@ -289,6 +344,7 @@ echo "  ✓ Git: $GIT_NAME <$GIT_EMAIL>"
 echo "  ✓ SSH key: $SSH_KEY"
 echo "  $([ -f "$CLAUDE_CONFIG" ] && echo "✓" || echo "⚠") Claude API key"
 echo "  $(grep -q "GEMINI_API_KEY" "$SECRETS_FILE" 2>/dev/null && echo "✓" || echo "⚠") Gemini API key"
+echo "  $(grep -q "OPENAI_API_KEY" "$SECRETS_FILE" 2>/dev/null && echo "✓" || echo "⚠") OpenAI API key"
 echo
 echo "Next steps:"
 echo
