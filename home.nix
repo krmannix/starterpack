@@ -48,7 +48,7 @@
       "github-iteratedcomputing" = {
         hostname = "github.com";
         user = "git";
-        identityFile = "~/.ssh/id_ed25519_iteratedcomputing";
+        identityFile = "~/.ssh/id_ed25519";
       };
       "github.com" = {
         user = "git";
