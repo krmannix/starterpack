@@ -9,6 +9,13 @@
   programs.git = {
     enable = true;
 
+    includes = [
+      {
+        condition = "gitdir:~/projects/iteratedcomputing/";
+        path = "~/.config/git/iteratedcomputing";
+      }
+    ];
+
     settings = {
       alias = {
         s = "status";
@@ -30,6 +37,22 @@
       pack = {
         windowMemory = "100m";
         packSizeLimit = "100m";
+      };
+    };
+  };
+
+  # SSH configuration
+  programs.ssh = {
+    enable = true;
+    matchBlocks = {
+      "github-iteratedcomputing" = {
+        hostname = "github.com";
+        user = "git";
+        identityFile = "~/.ssh/id_ed25519";
+      };
+      "github.com" = {
+        user = "git";
+        identityFile = "~/.ssh/id_ed25519";
       };
     };
   };
@@ -63,6 +86,15 @@
     source = ./bin/nix-sync;
     executable = true;
   };
+
+  # Git identity for iteratedcomputing
+  home.file.".config/git/iteratedcomputing".source = ./dotfiles/git/iteratedcomputing;
+
+  # Project directory scaffolding
+  home.activation.projectDirs = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    $DRY_RUN_CMD mkdir -p "$HOME/projects/personal"
+    $DRY_RUN_CMD mkdir -p "$HOME/projects/iteratedcomputing"
+  '';
 
   # Skills repository setup
   home.activation.cloneSkills = lib.hm.dag.entryAfter ["writeBoundary"] ''
