@@ -34,6 +34,12 @@
     };
   };
 
+  # direnv
+  programs.direnv = {
+    enable = true;
+    enableZshIntegration = true;
+  };
+
   # Zsh configuration - symlink entire directory
   home.file.".config/zsh" = {
     source = ./dotfiles/zsh;
